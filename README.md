@@ -3,7 +3,7 @@ This repo makes it easier to run the full NexusNet application.
 
 ## How to run (Linux and MacOS)
 
-### 1. Install dependencies
+<!-- ### 1. Install dependencies
 
 You need to install `git`, `docker`, `docker compose` and `java` .
 
@@ -17,7 +17,7 @@ Right now the script fetches the `main` branch. If you like to fetch another bra
 
 ```
 bash initialize develop
-```
+``` -->
 
 If you want to test your **local version**, copy your project folder inside the root of this project.
 
