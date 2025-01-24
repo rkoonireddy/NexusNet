@@ -1,7 +1,8 @@
 # NexusNet
 This repo makes it easier to run the full NexusNet application. 
 
-## How to run (Linux and MacOS)
+## How to run 
+<!-- (Linux and MacOS) -->
 
 <!-- ### 1. Install dependencies
 
@@ -29,7 +30,7 @@ docker compose up --build
 
 You will now be able to use the app at [localhost:3000](http://localhost:3000).
 
-### Reset (if needed)
+<!-- ### Reset (if needed)
 
 If you like to update the projects and you feel too lazy to pull them, you can use the `reset` script and then go back to STEP2. **Do not execute this script while in another directory.**
 
@@ -45,4 +46,4 @@ Follow the instructions for Linux but use `initialize.bat` instead of `initializ
 
 ## Option 2:
 
-The best option right now is to run it in an [emulated bash shell](https://itsfoss.com/install-bash-on-windows/).
+The best option right now is to run it in an [emulated bash shell](https://itsfoss.com/install-bash-on-windows/). -->
