@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#Variables - Color
+RED="\033[1;31m"
+GREEN="\033[1;32m"
+NOCOLOR="\033[0m"
+
+echo -e "${GREEN}Deleting projects and scripts${NOCOLOR}"
+
+rm -rf user-manager
+rm -rf post-manager
+rm -rf chat-manager
+rm -rf frontend
+rm -rf scripts
+
+echo -e "Done"

@@ -1,0 +1,6 @@
+s3 for storing front end and backend
+Dynamo for database
+Lambda for functions and serverless calls
+React framework + TypeScript front end
+API calls AWS for API setup
+LocalStack to test the AWS setup locally.

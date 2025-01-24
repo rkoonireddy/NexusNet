@@ -1,0 +1,40 @@
+version: '3'
+services:
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack
+    ports:
+      - '4566:4566' # Default port for LocalStack
+    environment:
+      - AWS_DEFAULT_REGION=eu-central-2
+      - EDGE_PORT=4566
+      - SERVICES=dynamodb,lambda,apigateway
+      - DEBUG=1 # Enable debugging output
+      - KINESIS_PROVIDER=kinesalite
+      - LAMBDA_LIMITS_CODE_SIZE_ZIPPED=524288000
+      - LAMBDA_LIMITS_CREATE_FUNCTION_REQUEST_SIZE=524288000
+      - LAMBDA_DOCKER_NETWORK=backend
+      - DYNAMODB_SHARE_DB=1
+    volumes:
+      - './:/etc/localstack/init/ready.d/' # Mount your project directory to automatically run scripts
+      - '/var/run/docker.sock:/var/run/docker.sock' # Mount the Docker socket to allow LocalStack to manage Docker containers
+    networks:
+      - network
+
+  usermanager:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - usermanager.aws.s3.bucket=nexus-net-user-info-bucket
+      - amazon.dynamodb.endpoint=http://localstack:4566/
+      - amazon.aws.accesskey=key
+      - amazon.aws.secretkey=key2
+      - DYNAMODB_IN_MEMORY=1
+    networks:
+      - network
+
+networks:
+  network:

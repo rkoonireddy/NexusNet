@@ -1,0 +1,55 @@
+#!/bin/bash
+
+#Args
+BRANCH=${1:-main}
+
+#Variables - Color
+RED="\033[1;31m"
+GREEN="\033[1;32m"
+NOCOLOR="\033[0m"
+
+echo
+
+echo -e "Step 1: ${GREEN}checking dependencies${NOCOLOR}"
+
+# List of executables to check
+executables=("docker" "git")
+
+# Checks if every executable is installed
+for cmd in "${executables[@]}"; do
+    if ! command -v "$cmd" &> /dev/null; then
+        echo "$cmd could not be found"
+        exit 1
+    fi
+done
+
+echo "All executables are installed"
+
+echo
+
+echo -e "Step 2: ${GREEN}cloning repositories${NOCOLOR}"
+
+repos=("https://github.com/ASE-FS24/user-manager" "https://github.com/ASE-FS24/post-manager" "https://github.com/ASE-FS24/frontend" "https://github.com/ASE-FS24/chat-manager")
+
+for repo in "${repos[@]}"; do
+    git clone -b $BRANCH "$repo"
+done
+
+echo "All repositories cloned"
+
+echo 
+
+echo -e "Step 3: ${GREEN}copying scripts${NOCOLOR}"
+
+mkdir scripts
+
+find frontend/ -maxdepth 1 -name '*.sh' -exec sh -c 'cp "$1" scripts/frontend-"$(basename "$1")"' _ {} \;
+find user-manager/ -maxdepth 1 -name '*.sh' -exec sh -c 'cp "$1" scripts/user-manager-"$(basename "$1")"' _ {} \;
+find post-manager/ -maxdepth 1 -name '*.sh' -exec sh -c 'cp "$1" scripts/post-manager-"$(basename "$1")"' _ {} \;
+find chat-manager/ -maxdepth 1 -name '*.sh' -exec sh -c 'cp "$1" scripts/chat-manager-"$(basename "$1")"' _ {} \;
+
+chmod +x scripts/*.sh 
+
+echo 
+
+echo -e "${GREEN}Done.${NOCOLOR} You can now run the docker-compose file to start the application."

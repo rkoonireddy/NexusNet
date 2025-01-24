@@ -1,0 +1,413 @@
+openapi: 3.0.0
+info:
+  title: Usermanager API
+  description: API for managing user profiles in a NexusNet social network app.
+  version: 1.0.0
+servers:
+  - url: 'https://api.nexusnet.ch/v1'
+paths:
+  /users:
+    get:
+      summary: Get all users
+      operationId: getUsers
+      responses:
+        '200':
+          description: Got all users successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserSummary'
+                description: Each item represents the summary of a user.
+    post:
+      summary: Create a new user profile
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User profile created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+
+  /users/id/{userId}:
+    get:
+      summary: Get a user profile by ID
+      operationId: getUserById
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+
+    put:
+      summary: Update an existing user profile
+      operationId: updateUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUser'
+      responses:
+        '200':
+          description: User profile updated successfully
+        '400':
+          description: Bad request
+        '404':
+          description: User not found
+
+    delete:
+      summary: Delete a user profile
+      operationId: deleteUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: User profile deleted successfully
+        '404':
+          description: User not found
+
+  /users/{userId}/resume:
+    get:
+      summary: Get user's resume
+      operationId: getResume
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User's resume retrieved successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "https://example-bucket.s3.amazonaws.com/user-files/12345/resume.pdf?AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE&Expires=1318622958&Signature=mcw%2BJCvY7p9bqYlJpYBG9Pd%2B3JI%3D"
+        '400':
+          description: Bad request
+        '404':
+          description: Profile picture not found
+    post:
+      summary: Upload user's resume
+      operationId: uploadResume
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                resume:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Resume uploaded successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "https://example-bucket.s3.amazonaws.com/user-files/12345/resume.pdf?AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE&Expires=1318622958&Signature=mcw%2BJCvY7p9bqYlJpYBG9Pd%2B3JI%3D"
+        '400':
+          description: Bad request
+        '404':
+          description: User not found
+
+  /users/{userId}/profilePicture:
+    get:
+      summary: Get user's profile picture
+      operationId: getProfilePicture
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Profile picture retrieved successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "https://example-bucket.s3.amazonaws.com/user-files/12345/profilePicture/picture.jpg?AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE&Expires=1318622958&Signature=mcw%2BJCvY7p9bqYlJpYBG9Pd%2B3JI%3D"
+        '400':
+          description: Bad request
+        '404':
+          description: Profile picture not found
+    post:
+      summary: Upload user's profile picture
+      operationId: uploadProfilePicture
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                profilePicture:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Profile picture uploaded successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "https://example-bucket.s3.amazonaws.com/user-files/12345/profilePicture/picture.jpg?AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE&Expires=1318622958&Signature=mcw%2BJCvY7p9bqYlJpYBG9Pd%2B3JI%3D"
+        '400':
+          description: Bad request
+        '404':
+          description: User not found
+        '500':
+          description: Service not available
+
+  /users/username/{username}:
+    get:
+      summary: Get a user profile by username
+      operationId: getUserByUsername
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+
+  /users/{userId}/follows/{followId}:
+    post:
+      summary: Create a follow for a userId
+      operationId: followUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: followId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Created follow for user successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "api/users/1234/follow/4321"
+        '404':
+          description: User not found
+    delete:
+      summary: Unfollow a user
+      operationId: unfollowUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: followId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Unfollowed user successfully
+        '404':
+          description: User not found
+
+
+  /users/{userId}/follows:
+    get:
+      summary: Get all follows of a user
+      operationId: getFollows
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of users that the user follows
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserSummary'
+                description: Each item represents the summary of a user.
+        '404':
+          description: User not found
+
+  /users/{userId}/followers:
+    get:
+      summary: Get all followers of a user
+      operationId: getFollowers
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of users that follow the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserSummary'
+                description: Each item represents the summary of a user.
+        '404':
+          description: User not found
+
+  /users/follows:
+    get:
+      summary: Get all follow connections
+      operationId: getAllFollows
+      responses:
+        '200':
+          description: List of user follows
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/UserSummary'
+
+
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - id
+        - firstName
+        - lastName
+        - username
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        firstName:
+          type: string
+        lastName:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        motto:
+          type: string
+        university:
+          type: string
+        bio:
+          type: string
+        resume:
+          type: string
+          format: binary
+        degreeProgram:
+          type: string
+        birthday:
+          type: string
+          format: date
+        privateProfile:
+          type: boolean
+
+    UpdateUser:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        username:
+          type: string
+        university:
+          type: string
+        email:
+          type: string
+        motto:
+          type: string
+        bio:
+          type: string
+        degreeProgram:
+          type: string
+        birthday:
+          type: string
+          format: date
+        privateProfile:
+          type: boolean
+
+    UserSummary:
+      type: object
+      required:
+        - id
+        - username
+        - profilePicture
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        profilePicture:
+          type: string
